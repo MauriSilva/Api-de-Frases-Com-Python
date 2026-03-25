@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerador de Frases</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #2f2f4f;
+            padding: 30px;
+            border-radius: 16px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #6c5ce7;
+            border: none;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #5a4bd6;
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        #frase {
+            margin-top: 20px;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        #msg {
+            margin-top: 10px;
+            color: #00cec9;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>😂 Frases Dev</h1>
+
+    <button onclick="buscarFrase()">Gerar frase aleatória</button>
+
+    <div class="section">
+        <input type="text" id="idFrase" placeholder="Digite o ID da frase">
+        <button onclick="buscarFraseExpecifica()">Buscar por ID</button>
+    </div>
+
+    <div class="section">
+        <input type="text" id="enviarFrase" placeholder="Digite uma nova frase">
+        <button onclick="enviarFrase()">Enviar frase</button>
+    </div>
+
+    <p id="msg"></p>
+    <p id="frase">Clique no botão 👆</p>
+</div>
+
+<script>
+    async function enviarFrase() {
+        const input = document.getElementById("enviarFrase");
+        const conteudo = input.value;
+
+        if (!conteudo) {
+            alert("Digite uma frase!");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/addfrase", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    texto: conteudo
+                })
+            });
+
+            await response.json();
+
+            document.getElementById("frase").innerText = "Frase enviada! ✅";
+            input.value = "";
+
+        } catch (error) {
+            console.error("Erro:", error);
+        }
+    }
+
+    async function buscarFrase() {
+        try {
+            const response = await fetch("http://127.0.0.1:8000/");
+            const data = await response.json();
+
+            document.getElementById("frase").innerText = data.frase;
+
+        } catch (error) {
+            console.error("Erro:", error);
+        }
+    }
+
+    async function buscarFraseExpecifica() {
+        const input = document.getElementById("idFrase");
+        let id = parseInt(input.value);
+
+        if (isNaN(id)) {
+            alert("Digite um ID válido!");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/frase/" + id);
+            const data = await response.json();
+
+            if (data.erro) {
+                document.getElementById("msg").innerText = data.erro;
+            } else {
+                document.getElementById("msg").innerText = data.msg;
+            }
+
+        } catch (error) {
+            console.error("Erro:", error);
+        }
+    }
+</script>
+
+</body>
+</html>
