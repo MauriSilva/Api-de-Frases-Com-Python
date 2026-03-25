@@ -118,7 +118,8 @@ Este projeto foi desenvolvido com foco em aprendizado prático de:
 
 ## 📸 Preview
 
-*(adicione aqui um print do projeto ou GIF depois 👀)*
+<img width="491" height="510" alt="image" src="https://github.com/user-attachments/assets/c0f75830-a9a6-4390-a8df-16ba4fc503a0" />
+
 
 ---
 
